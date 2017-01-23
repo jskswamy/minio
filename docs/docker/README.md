@@ -66,6 +66,40 @@ docker run -p 9000:9000 --name minio1 \
   minio/minio server /export
 ```
 
+### Secret Keys using configuration
+
+To override Minio's auto-generated keys, you can specify `MINIO_ACCESS_KEY` and `MINIO_SECRET_KEY` using docker volume
+
+create a `config/setting.sh` file
+
+```
+#! /bin/sh
+export MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+export MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+```
+
+
+#### GNU/Linux and macOS
+
+```sh
+docker run -p 9000:9000 --name minio1 \
+  -v /mnt/export/minio1:/export \
+  -v /mnt/config/minio1:/root/.minio \
+  -v $PWD/config:/config \
+  minio/minio server /export
+```
+
+#### Microsoft Windows
+
+```sh
+docker run -p 9000:9000 --name minio1 \
+  -v D:\export\minio1:/export \
+  -v D:\export\minio1-config:/root/.minio \
+  -v $PWD/config:/config \
+  minio/minio server /export
+```
+
+
 ## 5. Test Distributed Minio on Docker
 
 This example shows how to run 4 node Minio cluster inside different docker containers using [docker-compose](https://docs.docker.com/compose/). Please download [docker-compose.yml](https://raw.githubusercontent.com/minio/minio/master/docs/docker/docker-compose.yml) to your current working directory, docker-compose pulls the Minio Docker image.

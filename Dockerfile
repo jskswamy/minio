@@ -1,17 +1,17 @@
 FROM golang:1.7-alpine
 
-WORKDIR /go/src/app
+ENV WORKDIR /opt/minio
 
-COPY . /go/src/app
+WORKDIR $WORKDIR
+COPY . $WORKDIR
 
-RUN \
-	apk add --no-cache git && \
-	go-wrapper download && \
-	go-wrapper install -ldflags "$(go run buildscripts/gen-ldflags.go)" && \
-	mkdir -p /export/docker && \
-	rm -rf /go/pkg /go/src && \
-	apk del git
+RUN apk add --no-cache git \
+    && go-wrapper download \
+    && go-wrapper install -ldflags "$(go run buildscripts/gen-ldflags.go)" \
+    && mkdir -p /export/docker \
+    && rm -rf /go/pkg /go/src \
+    && apk del git
 
 EXPOSE 9000
-ENTRYPOINT ["minio"]
-VOLUME ["/export"]
+ENTRYPOINT ["./bin/docker-entrypoint.sh"]
+VOLUME ["/export", "/config"]
